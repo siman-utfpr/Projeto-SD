@@ -1,0 +1,1 @@
+Os projetos são executados na IDE Netbeans 12.0. O cliente e o servidor estão em projetos separados. Cada projeto possui apenas uma classe principal, localizada no pacote "aplicação". É necessário apenas executar a classe principal de cada projeto. Não são necessárias dependências externas.
