@@ -8,7 +8,6 @@ import visao.TelaAtualizacaoUsuario;
 import visao.TelaBroadcast;
 import visao.TelaCadastro;
 import visao.TelaChat;
-import visao.TelaEditarServicosEProdutos;
 import visao.TelaExcluirConta;
 import visao.TelaHomePage;
 import visao.TelaListarServicosEProdutos;
@@ -95,7 +94,7 @@ public class FabricaVisoes {
     }
 
     public static void mostrarTelaEditarServicosEProdutos(ServicoProduto sp) {
-        TelaSalvarServicosEProdutos tela = new TelaSalvarServicosEProdutos(sp);
+        TelaSalvarServicoProduto tela = new TelaSalvarServicoProduto(sp);
         tela.setVisible(true);
 
         telas.put("TelaEditarServicosEProdutos", tela);
