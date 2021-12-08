@@ -351,8 +351,8 @@ public class TelaLogin extends javax.swing.JFrame {
         if (!erroNoLogin) {
             
             FabricaVisoes.esconderTela("TelaLogin");
-            this.gerenciadorChat = new GerenciadorChat();
-            this.gerenciadorChat.start();
+           // this.gerenciadorChat = new GerenciadorChat();
+           // this.gerenciadorChat.start();
             FabricaVisoes.mostrarTelaBroadcast();
             FabricaVisoes.mostrarTelaHomePage();
         } else {

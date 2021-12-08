@@ -38,23 +38,9 @@ public class ClienteTCP {
     public JSONObject enviarMensagem(JSONObject mensagem) throws IOException, JSONException {
         saida.print(mensagem.toString());
         saida.flush();
-        int op;
-        JSONObject res = null;
-        if (mensagem.getInt("operacao") != 18) {
-            do {
-                char[] cbuf = new char[2048];
-                entrada.read(cbuf);
-                res = new JSONObject(String.valueOf(cbuf));
-                op = res.getInt("operacao");
-                if (op == 19) {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ex) {
-                    }
-                }
-
-            } while (op == 19);
-        }
+        char[] cbuf = new char[2048];
+        entrada.read(cbuf);
+        JSONObject res = new JSONObject(String.valueOf(cbuf));
         return res;
     }
 

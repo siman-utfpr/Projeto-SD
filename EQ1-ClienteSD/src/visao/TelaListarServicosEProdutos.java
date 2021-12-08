@@ -30,6 +30,7 @@ import visao.util.GerenciadorUsuario;
 public class TelaListarServicosEProdutos extends javax.swing.JFrame {
 
     private ArrayList<Produto> servicosEProdutos;
+    private ArrayList<Produto> servicosEProdutosExibidos;
 
     private boolean listarApenasDoUsuarioLogado;
 
@@ -41,10 +42,16 @@ public class TelaListarServicosEProdutos extends javax.swing.JFrame {
 
         this.setLocationRelativeTo(null);
 
-        this.servicosEProdutos = new ArrayList<>();
+        try {
+            this.servicosEProdutos = GerenciadorServicoProduto.listarProdutos();
+            this.servicosEProdutosExibidos = this.servicosEProdutos;
+        } catch (JSONException ex) {
+            //Logger.getLogger(TelaListarServicosEProdutos.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            // Logger.getLogger(TelaListarServicosEProdutos.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         //this.listarApenasDoUsuarioLogado = listarApenasDoUsuarioLogado;
-
         preencherTable();
     }
 
@@ -63,6 +70,10 @@ public class TelaListarServicosEProdutos extends javax.swing.JFrame {
         servicosEProdutosTable = new javax.swing.JTable();
         jButtonVoltar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jTextFieldFiltro = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jButtonFiltrar = new javax.swing.JButton();
+        jButtonLimparFiltro = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Ver serviços e produtos");
@@ -102,25 +113,50 @@ public class TelaListarServicosEProdutos extends javax.swing.JFrame {
 
         jLabel1.setText("Para mais opções, clique em um serviço ou produto");
 
+        jLabel3.setText("Filtro:");
+
+        jButtonFiltrar.setText("Filtrar");
+        jButtonFiltrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonFiltrarActionPerformed(evt);
+            }
+        });
+
+        jButtonLimparFiltro.setText("Limpar filtro");
+        jButtonLimparFiltro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonLimparFiltroActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanelLayout = new javax.swing.GroupLayout(jPanel);
         jPanel.setLayout(jPanelLayout);
         jPanelLayout.setHorizontalGroup(
             jPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelLayout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addGroup(jPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 895, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(22, Short.MAX_VALUE))))
             .addGroup(jPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 493, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButtonVoltar, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(55, 55, 55))
+            .addGroup(jPanelLayout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(jPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelLayout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 895, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(22, Short.MAX_VALUE))
+                    .addGroup(jPanelLayout.createSequentialGroup()
+                        .addGroup(jPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanelLayout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jTextFieldFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, 394, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(26, 26, 26)
+                                .addComponent(jButtonFiltrar)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButtonLimparFiltro))
+                            .addComponent(jLabel1))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanelLayout.setVerticalGroup(
             jPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -131,9 +167,14 @@ public class TelaListarServicosEProdutos extends javax.swing.JFrame {
                         .addComponent(jButtonVoltar, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE)
                         .addGap(3, 3, 3))
                     .addComponent(jLabel2))
-                .addGap(18, 18, 18)
                 .addComponent(jLabel1)
-                .addGap(30, 30, 30)
+                .addGap(18, 18, 18)
+                .addGroup(jPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextFieldFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3)
+                    .addComponent(jButtonFiltrar)
+                    .addComponent(jButtonLimparFiltro))
+                .addGap(26, 26, 26)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -163,42 +204,73 @@ public class TelaListarServicosEProdutos extends javax.swing.JFrame {
     private void servicosEProdutosTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_servicosEProdutosTableMouseClicked
         // TODO add your handling code here:
         int selectedIndex = servicosEProdutosTable.getSelectedRow();
-        Produto produtoSelecionado = this.servicosEProdutos.get(selectedIndex);
+        Produto produtoSelecionado = this.servicosEProdutosExibidos.get(selectedIndex);
         FabricaVisoes.esconderTela("TelaListarServicosEProdutos");
         FabricaVisoes.mostrarTelaProduto(produtoSelecionado);
-        
+
     }//GEN-LAST:event_servicosEProdutosTableMouseClicked
+
+    private void jButtonFiltrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFiltrarActionPerformed
+        // TODO add your handling code here:
+        this.servicosEProdutosExibidos = new ArrayList<>();
+        String filtro = jTextFieldFiltro.getText().trim().toLowerCase();
+        if (filtro.isBlank()) {
+            this.servicosEProdutosExibidos = this.servicosEProdutos;
+            this.preencherTable();
+            return;
+        }
+        for (Produto p : this.servicosEProdutos) {
+            if (p.getTitulo().toLowerCase().contains(filtro)
+                    || p.getDescricao().toLowerCase().contains(filtro)
+                    || p.getCategoria().toLowerCase().contains(filtro)
+                    || String.valueOf(p.getValor()).toLowerCase().contains(filtro)) {
+                this.servicosEProdutosExibidos.add(p);
+
+            }
+        }
+        this.preencherTable();
+
+    }//GEN-LAST:event_jButtonFiltrarActionPerformed
+
+    private void jButtonLimparFiltroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLimparFiltroActionPerformed
+        // TODO add your handling code here:
+        jTextFieldFiltro.setText("");
+        this.servicosEProdutosExibidos = this.servicosEProdutos;
+        this.preencherTable();
+    }//GEN-LAST:event_jButtonLimparFiltroActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonFiltrar;
+    private javax.swing.JButton jButtonLimparFiltro;
     private javax.swing.JButton jButtonVoltar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField jTextFieldFiltro;
     private javax.swing.JTable servicosEProdutosTable;
     // End of variables declaration//GEN-END:variables
 
     private void preencherTable() {
-        try {
-            this.servicosEProdutos = GerenciadorServicoProduto.listarProdutos();
 
-            String titulos[] = {"Titulo", "Valor", "Tipo", "Categoria", "V/D/T"};
-            String dados[][] = new String[servicosEProdutos.size()][5];
-            for (int i = 0; i < servicosEProdutos.size(); i++) {
-                Produto p = servicosEProdutos.get(i);
-                dados[i][0] = p.getTitulo();
-                dados[i][1] = String.valueOf(p.getValor());
-                dados[i][2] = String.valueOf(p.getFlagSP());
-                dados[i][3] = String.valueOf(p.getCategoria());
-                dados[i][4] = String.valueOf(p.getFlagVDT());
-            }
+        String titulos[] = {"Titulo", "Valor", "Tipo", "Categoria", "V/D/T"};
+        String dados[][] = new String[servicosEProdutosExibidos.size()][5];
+        for (int i = 0; i < servicosEProdutosExibidos.size(); i++) {
+            Produto p = servicosEProdutosExibidos.get(i);
+            dados[i][0] = p.getTitulo();
+            dados[i][1] = String.valueOf(p.getValor());
+            dados[i][2] = String.valueOf(p.getFlagSP());
+            dados[i][3] = String.valueOf(p.getCategoria());
+            dados[i][4] = String.valueOf(p.getFlagVDT());
+        }
 
-            DefaultTableModel model = new DefaultTableModel(dados, titulos);
-            servicosEProdutosTable.setModel(model);
-            //servicosEProdutosTable.setEnabled(false);
+        DefaultTableModel model = new DefaultTableModel(dados, titulos);
+        servicosEProdutosTable.setModel(model);
+        //servicosEProdutosTable.setEnabled(false);
 
-            /*
+        /*
             Object nomes[] = servicosEProdutos.stream()
                     .map(ServicoProduto::getNome)
                     .collect(Collectors.toList())
@@ -233,15 +305,9 @@ public class TelaListarServicosEProdutos extends javax.swing.JFrame {
             
             this.servicosEProdutosTable.setModel(tableModel);
 
-             */
-        } catch (JSONException ex) {
-            Logger.getLogger(TelaListarServicosEProdutos.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(TelaListarServicosEProdutos.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+         */
     }
-/*
+    /*
     private void criarPopupMenus() {
         JPopupMenu popupMenu = new JPopupMenu();
 

@@ -122,5 +122,10 @@ public class FabricaVisoes {
 
         telas.put("TelaChat", tela);
     }
+    
+    public static void atualizarChatBroadcast(String msg){
+        TelaBroadcast tela = (TelaBroadcast) telas.get("TelaBroadcast");
+        tela.atualizarChat(msg);
+    }
 
 }

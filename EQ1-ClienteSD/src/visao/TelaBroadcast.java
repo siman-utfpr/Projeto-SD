@@ -22,6 +22,8 @@ public class TelaBroadcast extends javax.swing.JFrame {
      */
     public TelaBroadcast() {
         initComponents();
+        jTextAreaChat.setEditable(false);
+        jTextAreaChat.setEnabled(true);
     }
 
     /**
@@ -97,6 +99,7 @@ public class TelaBroadcast extends javax.swing.JFrame {
         try {
             // TODO add your handling code here:
             GerenciadorChat.enviarMensagemBroadcast(this.jTextFieldMensagem.getText());
+            jTextFieldMensagem.setText("");
         } catch (JSONException ex) {
             //Logger.getLogger(TelaBroadcast.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -104,6 +107,10 @@ public class TelaBroadcast extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButtonEnviarActionPerformed
 
+    public void atualizarChat(String msg){
+        jTextAreaChat.setText(jTextAreaChat.getText() + "\n\n" + msg);
+    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonEnviar;

@@ -23,6 +23,7 @@ public class GerenciadorChat extends Thread {
                 if (op == 19) {
                     System.out.println("Mensagem recebida: " + res);
                     Logger.escreverMensagem("Mensagem recebida: " + res);
+                    FabricaVisoes.atualizarChatBroadcast(res.getJSONObject("data").getString("mensagem"));
                 } else {
                     clienteTCP.entrada.reset();
                     Thread.sleep(300);
