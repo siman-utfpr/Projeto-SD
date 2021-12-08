@@ -6,6 +6,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
 import visao.util.FabricaVisoes;
 
 public class ServidorTCP extends Thread {
@@ -16,9 +18,11 @@ public class ServidorTCP extends Thread {
     public FabricaVisoes fabricaVisoes;
     
     private ArrayList<ClienteLogado> usuariosLogados;
+    private ArrayList<ThreadServidorTCP> threads;
 
     public ServidorTCP(FabricaVisoes fabricaVisoes) {
         this.usuariosLogados = new ArrayList<>();
+        this.threads = new ArrayList<>();
         this.fabricaVisoes = fabricaVisoes;
     }
 
@@ -28,6 +32,7 @@ public class ServidorTCP extends Thread {
             try {
                 clienteSocket = servidorSocket.accept();
                 ThreadServidorTCP thread = new ThreadServidorTCP(clienteSocket, this);
+                this.threads.add(thread);
                 thread.start();
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -43,6 +48,28 @@ public class ServidorTCP extends Thread {
 
     public void adicionarClienteLogado(ClienteLogado clienteLogado) {
         this.usuariosLogados.add(clienteLogado);
+    }
+    
+    public ArrayList<ClienteLogado> getClientesLogados(){
+        return this.usuariosLogados;
+    }
+    
+    public void broadcast(String mensagem) throws JSONException{
+        JSONObject msg = new JSONObject("{operacao: 19}");
+        JSONObject data = new JSONObject();
+        data.put("mensagem", mensagem);
+        msg.put("data", data);
+        for(ThreadServidorTCP t: this.threads){
+            if(t.usuarioLogado){
+                t.saida.print(msg);
+                t.saida.flush();
+                
+                t.controllerLog.escreverMensagem("(" + t.clienteSocket.getInetAddress()
+                                .getHostAddress() + ")Mensagem enviada -> " + msg);
+                System.out.println("(" + t.clienteSocket.getInetAddress()
+                                .getHostAddress() + ")Mensagem enviada -> " + msg);
+            }
+        }
     }
     
     public Usuario getUsuarioLogado(String ip){

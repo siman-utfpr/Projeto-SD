@@ -28,6 +28,7 @@ public class TelaLog extends javax.swing.JFrame {
 
         logTextArea.setEditable(false);
         logTextArea.setColumns(20);
+        logTextArea.setLineWrap(true);
         logTextArea.setRows(5);
         jScrollPane1.setViewportView(logTextArea);
 
@@ -41,7 +42,7 @@ public class TelaLog extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 617, Short.MAX_VALUE)
                 .addContainerGap())
             .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );

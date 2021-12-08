@@ -9,7 +9,7 @@ import util.Digest;
 
 public class GerenciadorUsuario {
 
-    private static ClienteTCP clienteTCP = null;
+    public static ClienteTCP clienteTCP = null;
 
     private static Usuario usuarioLogado = null;
 

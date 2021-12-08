@@ -2,18 +2,20 @@ package visao.util;
 
 import java.util.HashMap;
 import javax.swing.JFrame;
-import modelo.ServicoProduto;
+import modelo.Produto;
 import modelo.Usuario;
+import visao.TelaAtualizacaoProduto;
 import visao.TelaAtualizacaoUsuario;
 import visao.TelaBroadcast;
 import visao.TelaCadastro;
+import visao.TelaCadastroProduto;
 import visao.TelaChat;
 import visao.TelaExcluirConta;
 import visao.TelaHomePage;
 import visao.TelaListarServicosEProdutos;
 import visao.TelaLog;
 import visao.TelaLogin;
-import visao.TelaSalvarServicoProduto;
+import visao.TelaProduto;
 import visao.TelaRecuperarSenha;
 
 public class FabricaVisoes {
@@ -47,6 +49,13 @@ public class FabricaVisoes {
 
         telas.put("TelaAtualizacaoUsuario", tela);
     }
+    
+    public static void mostrarTelaEdicaoProduto(Produto p){
+        TelaAtualizacaoProduto tela = new TelaAtualizacaoProduto(p);
+        tela.setVisible(true);
+        
+        telas.put("TelaEdicaoProduto", tela);
+    }
 
     public static void esconderTela(String nome) {
         JFrame tela = telas.get(nome);
@@ -64,6 +73,13 @@ public class FabricaVisoes {
 
         telas.put("TelaLog", tela);
     }
+    
+    public static void mostrarTelaBroadcast(){
+        TelaBroadcast telaBroadcast = new TelaBroadcast();
+        telaBroadcast.setVisible(true);
+        
+        telas.put("TelaBroadcast", telaBroadcast);
+    }
 
     public static void mostrarTelaExcluirConta() {
         TelaExcluirConta tela = new TelaExcluirConta();
@@ -79,32 +95,25 @@ public class FabricaVisoes {
         telas.put("TelaRecuperarSenha", tela);
     }
 
-    public static void mostrarTelaNovoServicoProduto() {
-        TelaSalvarServicoProduto tela = new TelaSalvarServicoProduto(null);
+    public static void mostrarTelaCadastroProduto() {
+        TelaCadastroProduto tela = new TelaCadastroProduto();
         tela.setVisible(true);
 
-        telas.put("TelaNovoServicoProduto", tela);
+        telas.put("TelaCadastroProduto", tela);
     }
 
-    public static void mostrarTelaBroadcast() {
-        TelaBroadcast tela = new TelaBroadcast();
-        tela.setVisible(true);
-
-        telas.put("TelaBroadcast", tela);
-    }
-
-    public static void mostrarTelaEditarServicosEProdutos(ServicoProduto sp) {
-        TelaSalvarServicoProduto tela = new TelaSalvarServicoProduto(sp);
-        tela.setVisible(true);
-
-        telas.put("TelaEditarServicosEProdutos", tela);
-    }
-
-    public static void mostrarTelaListarServicosEProdutos(boolean listarApenasDoUsuarioLogado) {
-        TelaListarServicosEProdutos tela = new TelaListarServicosEProdutos(listarApenasDoUsuarioLogado);
+    public static void mostrarTelaListarServicosEProdutos() {
+        TelaListarServicosEProdutos tela = new TelaListarServicosEProdutos();
         tela.setVisible(true);
 
         telas.put("TelaListarServicosEProdutos", tela);
+    }
+    
+    public static void mostrarTelaProduto(Produto p){
+        TelaProduto telaProduto = new TelaProduto(p);
+        telaProduto.setVisible(true);
+        
+        telas.put("TelaProduto", telaProduto);
     }
     
     public static void mostrarTelaChat(Usuario usuario) {

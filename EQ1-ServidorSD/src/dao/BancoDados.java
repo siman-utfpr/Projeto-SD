@@ -11,18 +11,28 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import modelo.Produto;
 import modelo.Usuario;
 
 public class BancoDados implements Serializable {
 
     private List<Usuario> usuarios = new ArrayList<>();
+    private List<Produto> produtos = new ArrayList<>();
 
     public List<Usuario> getUsuarios() {
         return usuarios;
     }
+    
+    public List<Produto> getProdutos() {
+        return produtos;
+    }
 
     public void setUsuarios(List<Usuario> usuarios) {
         this.usuarios = usuarios;
+    }
+    
+    public void setProdutos(List<Produto> produtos) {
+        this.produtos = produtos;
     }
 
     private static BancoDados bancoDados = null;

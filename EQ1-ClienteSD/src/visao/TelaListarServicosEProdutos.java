@@ -7,15 +7,18 @@ package visao;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
-import modelo.FlagStatus;
-import modelo.ServicoProduto;
+import modelo.Produto;
 import modelo.Usuario;
+import org.json.JSONException;
 import visao.util.FabricaVisoes;
 import visao.util.GerenciadorServicoProduto;
 import visao.util.GerenciadorUsuario;
@@ -26,22 +29,23 @@ import visao.util.GerenciadorUsuario;
  */
 public class TelaListarServicosEProdutos extends javax.swing.JFrame {
 
-    private ArrayList<ServicoProduto> servicosEProdutos;
+    private ArrayList<Produto> servicosEProdutos;
 
     private boolean listarApenasDoUsuarioLogado;
 
     /**
      * Creates new form TelaListarServicosEProdutos
      */
-    public TelaListarServicosEProdutos(boolean listarApenasDoUsuarioLogado) {
+    public TelaListarServicosEProdutos() {
         initComponents();
 
         this.setLocationRelativeTo(null);
 
-        this.listarApenasDoUsuarioLogado = listarApenasDoUsuarioLogado;
+        this.servicosEProdutos = new ArrayList<>();
+
+        //this.listarApenasDoUsuarioLogado = listarApenasDoUsuarioLogado;
 
         preencherTable();
-        criarPopupMenus();
     }
 
     /**
@@ -57,8 +61,10 @@ public class TelaListarServicosEProdutos extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         servicosEProdutosTable = new javax.swing.JTable();
+        jButtonVoltar = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Ver serviços e produtos");
 
         jPanel.setBackground(new java.awt.Color(203, 210, 217));
@@ -80,23 +86,54 @@ public class TelaListarServicosEProdutos extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        servicosEProdutosTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                servicosEProdutosTableMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(servicosEProdutosTable);
+
+        jButtonVoltar.setText("Voltar");
+        jButtonVoltar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonVoltarActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Para mais opções, clique em um serviço ou produto");
 
         javax.swing.GroupLayout jPanelLayout = new javax.swing.GroupLayout(jPanel);
         jPanel.setLayout(jPanelLayout);
         jPanelLayout.setHorizontalGroup(
             jPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanelLayout.createSequentialGroup()
                 .addGap(22, 22, 22)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 895, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22))
+                .addGroup(jPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanelLayout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 895, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(22, Short.MAX_VALUE))))
+            .addGroup(jPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 493, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButtonVoltar, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(55, 55, 55))
         );
         jPanelLayout.setVerticalGroup(
             jPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelLayout.createSequentialGroup()
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
+                .addGroup(jPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jButtonVoltar, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE)
+                        .addGap(3, 3, 3))
+                    .addComponent(jLabel2))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel1)
+                .addGap(30, 30, 30)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -117,8 +154,25 @@ public class TelaListarServicosEProdutos extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButtonVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonVoltarActionPerformed
+        // TODO add your handling code here:
+        FabricaVisoes.esconderTela("TelaListarServicosEProdutos");
+        FabricaVisoes.mostrarTelaHomePage();
+    }//GEN-LAST:event_jButtonVoltarActionPerformed
+
+    private void servicosEProdutosTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_servicosEProdutosTableMouseClicked
+        // TODO add your handling code here:
+        int selectedIndex = servicosEProdutosTable.getSelectedRow();
+        Produto produtoSelecionado = this.servicosEProdutos.get(selectedIndex);
+        FabricaVisoes.esconderTela("TelaListarServicosEProdutos");
+        FabricaVisoes.mostrarTelaProduto(produtoSelecionado);
+        
+    }//GEN-LAST:event_servicosEProdutosTableMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonVoltar;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel;
     private javax.swing.JScrollPane jScrollPane1;
@@ -126,58 +180,75 @@ public class TelaListarServicosEProdutos extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void preencherTable() {
-        this.servicosEProdutos = GerenciadorServicoProduto.getProdutos();
+        try {
+            this.servicosEProdutos = GerenciadorServicoProduto.listarProdutos();
 
-        if (this.listarApenasDoUsuarioLogado) {
-            String usuarioLogadoUuid = GerenciadorUsuario.getUsuarioLogado().getUuid();
-            this.servicosEProdutos.removeIf(obj -> !obj.getUsuario().getUuid().equals(usuarioLogadoUuid));
-        } else {
-            this.servicosEProdutos.removeIf(obj -> obj.getFlagStatus() == FlagStatus.F);
+            String titulos[] = {"Titulo", "Valor", "Tipo", "Categoria", "V/D/T"};
+            String dados[][] = new String[servicosEProdutos.size()][5];
+            for (int i = 0; i < servicosEProdutos.size(); i++) {
+                Produto p = servicosEProdutos.get(i);
+                dados[i][0] = p.getTitulo();
+                dados[i][1] = String.valueOf(p.getValor());
+                dados[i][2] = String.valueOf(p.getFlagSP());
+                dados[i][3] = String.valueOf(p.getCategoria());
+                dados[i][4] = String.valueOf(p.getFlagVDT());
+            }
+
+            DefaultTableModel model = new DefaultTableModel(dados, titulos);
+            servicosEProdutosTable.setModel(model);
+            //servicosEProdutosTable.setEnabled(false);
+
+            /*
+            Object nomes[] = servicosEProdutos.stream()
+                    .map(ServicoProduto::getNome)
+                    .collect(Collectors.toList())
+                    .toArray();
+            
+            Object precos[] = servicosEProdutos.stream()
+                    .map(ServicoProduto::getPreco)
+                    .collect(Collectors.toList())
+                    .toArray();
+            
+            Object categorias[] = servicosEProdutos.stream()
+                    .map(ServicoProduto::getCategoria)
+                    .collect(Collectors.toList())
+                    .toArray();
+            
+            Object servicoOuProduto[] = servicosEProdutos.stream()
+                    .map(ServicoProduto::getFlagSP)
+                    .collect(Collectors.toList())
+                    .toArray();
+            
+            Object vendaDoacaoOuTroca[] = servicosEProdutos.stream()
+                    .map(ServicoProduto::getFlagVDT)
+                    .collect(Collectors.toList())
+                    .toArray();
+            
+            DefaultTableModel tableModel = new DefaultTableModel();
+            tableModel.addColumn("nome", nomes);
+            tableModel.addColumn("preços", precos);
+            tableModel.addColumn("categoria", categorias);
+            tableModel.addColumn("S/P", servicoOuProduto);
+            tableModel.addColumn("V/D/T", vendaDoacaoOuTroca);
+            
+            this.servicosEProdutosTable.setModel(tableModel);
+
+             */
+        } catch (JSONException ex) {
+            Logger.getLogger(TelaListarServicosEProdutos.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(TelaListarServicosEProdutos.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        Object nomes[] = servicosEProdutos.stream()
-                .map(ServicoProduto::getNome)
-                .collect(Collectors.toList())
-                .toArray();
-
-        Object precos[] = servicosEProdutos.stream()
-                .map(ServicoProduto::getPreco)
-                .collect(Collectors.toList())
-                .toArray();
-
-        Object categorias[] = servicosEProdutos.stream()
-                .map(ServicoProduto::getCategoria)
-                .collect(Collectors.toList())
-                .toArray();
-
-        Object servicoOuProduto[] = servicosEProdutos.stream()
-                .map(ServicoProduto::getFlagSP)
-                .collect(Collectors.toList())
-                .toArray();
-
-        Object vendaDoacaoOuTroca[] = servicosEProdutos.stream()
-                .map(ServicoProduto::getFlagVDT)
-                .collect(Collectors.toList())
-                .toArray();
-
-        DefaultTableModel tableModel = new DefaultTableModel();
-        tableModel.addColumn("nome", nomes);
-        tableModel.addColumn("preços", precos);
-        tableModel.addColumn("categoria", categorias);
-        tableModel.addColumn("S/P", servicoOuProduto);
-        tableModel.addColumn("V/D/T", vendaDoacaoOuTroca);
-
-        this.servicosEProdutosTable.setModel(tableModel);
-
     }
-
+/*
     private void criarPopupMenus() {
         JPopupMenu popupMenu = new JPopupMenu();
 
         if (this.listarApenasDoUsuarioLogado) {
             JMenuItem jMenuItemEditarSP = new JMenuItem("Editar");
             jMenuItemEditarSP.addActionListener((ActionEvent evt) -> {
-                
+
                 int linhaSelecionada = servicosEProdutosTable.getSelectedRow();
                 ServicoProduto spSelecionado = servicosEProdutos.get(linhaSelecionada);
                 FabricaVisoes.mostrarTelaEditarServicosEProdutos(spSelecionado);
@@ -185,7 +256,7 @@ public class TelaListarServicosEProdutos extends javax.swing.JFrame {
 
             JMenuItem jMenuItemExcluirSP = new JMenuItem("Excluir");
             jMenuItemExcluirSP.addActionListener((ActionEvent evt) -> {
-                
+
                 int linhaSelecionada = servicosEProdutosTable.getSelectedRow();
                 ServicoProduto spSelecionado = servicosEProdutos.get(linhaSelecionada);
                 GerenciadorServicoProduto.excluirServicoProduto(spSelecionado);
@@ -199,21 +270,21 @@ public class TelaListarServicosEProdutos extends javax.swing.JFrame {
         } else {
             JMenuItem jMenuItemConversarComVendedor = new JMenuItem("Conversar com vendedor");
             jMenuItemConversarComVendedor.addActionListener((ActionEvent evt) -> {
-                
+
                 FabricaVisoes.esconderTela("TelaListarServicosEProdutos");
 
                 int linhaSelecionada = servicosEProdutosTable.getSelectedRow();
                 Usuario usuarioSelecionado = servicosEProdutos.get(linhaSelecionada).getUsuario();
                 FabricaVisoes.mostrarTelaChat(usuarioSelecionado);
             });
-            
+
             JMenuItem jMenuItemAbrirFecharStatus = new JMenuItem("Abrir/Fechar");
             jMenuItemAbrirFecharStatus.addActionListener((ActionEvent evt) -> {
 
                 int linhaSelecionada = servicosEProdutosTable.getSelectedRow();
                 ServicoProduto spSelecionado = servicosEProdutos.get(linhaSelecionada);
                 GerenciadorServicoProduto.abrirFecharServicoProduto(spSelecionado);
-                
+
                 preencherTable();
             });
 
@@ -223,20 +294,21 @@ public class TelaListarServicosEProdutos extends javax.swing.JFrame {
         servicosEProdutosTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent evt) {
-                if (SwingUtilities.isRightMouseButton(evt)) 
+                if (SwingUtilities.isRightMouseButton(evt)) {
                     return;
-                
+                }
+
                 int row = servicosEProdutosTable.rowAtPoint(evt.getPoint());
                 int column = servicosEProdutosTable.columnAtPoint(evt.getPoint());
 
                 if (!servicosEProdutosTable.isRowSelected(row)) {
                     servicosEProdutosTable.changeSelection(row, column, false, false);
                 }
-                
+
                 popupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
 
             }
         });
-    }
+    }*/
 
 }

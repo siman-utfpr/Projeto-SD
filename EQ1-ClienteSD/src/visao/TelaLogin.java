@@ -5,10 +5,13 @@ import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import org.json.JSONException;
 import visao.util.FabricaVisoes;
+import visao.util.GerenciadorChat;
 import visao.util.GerenciadorUsuario;
 import visao.util.Logger;
 
 public class TelaLogin extends javax.swing.JFrame {
+    
+    GerenciadorChat gerenciadorChat;
 
     public TelaLogin() {
         initComponents();
@@ -348,6 +351,9 @@ public class TelaLogin extends javax.swing.JFrame {
         if (!erroNoLogin) {
             
             FabricaVisoes.esconderTela("TelaLogin");
+            this.gerenciadorChat = new GerenciadorChat();
+            this.gerenciadorChat.start();
+            FabricaVisoes.mostrarTelaBroadcast();
             FabricaVisoes.mostrarTelaHomePage();
         } else {
             JOptionPane.showMessageDialog(null, "Credenciais inválidas!", "Erro", JOptionPane.ERROR_MESSAGE);

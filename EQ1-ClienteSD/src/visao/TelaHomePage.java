@@ -1,23 +1,26 @@
 package visao;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import org.json.JSONException;
 import visao.util.FabricaVisoes;
+import visao.util.GerenciadorServicoProduto;
 import visao.util.GerenciadorUsuario;
 import visao.util.TelaHomePageMenuButtons;
 
 public class TelaHomePage extends javax.swing.JFrame {
-    
+
     private TelaHomePageMenuButtons ultimoMenuBarSubmenuAberto;
-    
+
     public TelaHomePage() {
         initComponents();
 
         this.setLocationRelativeTo(null);
-        
+
         this.ultimoMenuBarSubmenuAberto = null;
-        
+
         fecharTodosMenuBarSubmenus();
     }
 
@@ -44,7 +47,6 @@ public class TelaHomePage extends javax.swing.JFrame {
         produtosEServicosMenu = new javax.swing.JPanel();
         verTodosButton = new javax.swing.JButton();
         novoButton = new javax.swing.JButton();
-        verOfertadosButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("HomePage");
@@ -184,7 +186,7 @@ public class TelaHomePage extends javax.swing.JFrame {
 
         verTodosButton.setBackground(new java.awt.Color(238, 239, 243));
         verTodosButton.setFont(new java.awt.Font("Ubuntu Thin", 0, 30)); // NOI18N
-        verTodosButton.setText("Ver todos");
+        verTodosButton.setText("Ver listagem");
         verTodosButton.setBorder(null);
         verTodosButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -194,21 +196,11 @@ public class TelaHomePage extends javax.swing.JFrame {
 
         novoButton.setBackground(new java.awt.Color(238, 239, 243));
         novoButton.setFont(new java.awt.Font("Ubuntu Thin", 0, 30)); // NOI18N
-        novoButton.setText("Novo");
+        novoButton.setText("Cadastrar");
         novoButton.setBorder(null);
         novoButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 novoButtonActionPerformed(evt);
-            }
-        });
-
-        verOfertadosButton.setBackground(new java.awt.Color(238, 239, 243));
-        verOfertadosButton.setFont(new java.awt.Font("Ubuntu Thin", 0, 30)); // NOI18N
-        verOfertadosButton.setText("Ver ofertados");
-        verOfertadosButton.setBorder(null);
-        verOfertadosButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                verOfertadosButtonActionPerformed(evt);
             }
         });
 
@@ -218,17 +210,14 @@ public class TelaHomePage extends javax.swing.JFrame {
             produtosEServicosMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(verTodosButton, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
             .addComponent(novoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(verOfertadosButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         produtosEServicosMenuLayout.setVerticalGroup(
             produtosEServicosMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(produtosEServicosMenuLayout.createSequentialGroup()
                 .addComponent(novoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(verOfertadosButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(verTodosButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(175, Short.MAX_VALUE))
+                .addContainerGap(223, Short.MAX_VALUE))
         );
 
         jPanel1.add(produtosEServicosMenu, new org.netbeans.lib.awtextra.AbsoluteConstraints(27, 62, 220, -1));
@@ -262,11 +251,12 @@ public class TelaHomePage extends javax.swing.JFrame {
     }//GEN-LAST:event_produtosEServicosButtonActionPerformed
 
     private void chatButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chatButtonActionPerformed
-       this.abrirMenuBarSubmenus(TelaHomePageMenuButtons.CHAT);
+        this.abrirMenuBarSubmenus(TelaHomePageMenuButtons.CHAT);
     }//GEN-LAST:event_chatButtonActionPerformed
 
     private void novoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_novoButtonActionPerformed
-        FabricaVisoes.mostrarTelaNovoServicoProduto();
+        FabricaVisoes.mostrarTelaCadastroProduto();
+        FabricaVisoes.esconderTela("TelaHomePage");
     }//GEN-LAST:event_novoButtonActionPerformed
 
     private void broadcastButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_broadcastButtonActionPerformed
@@ -278,12 +268,12 @@ public class TelaHomePage extends javax.swing.JFrame {
         FabricaVisoes.esconderTela("TelaHomePage");
     }//GEN-LAST:event_alterarDadosButtonActionPerformed
 
-    private void verOfertadosButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verOfertadosButtonActionPerformed
-        FabricaVisoes.mostrarTelaListarServicosEProdutos(true);
-    }//GEN-LAST:event_verOfertadosButtonActionPerformed
-
     private void verTodosButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verTodosButtonActionPerformed
-        FabricaVisoes.mostrarTelaListarServicosEProdutos(false);
+
+        FabricaVisoes.mostrarTelaListarServicosEProdutos();
+        FabricaVisoes.esconderTela("TelaHomePage");
+        //GerenciadorServicoProduto.listarProdutos();
+
     }//GEN-LAST:event_verTodosButtonActionPerformed
 
     private void excluirContaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_excluirContaButtonActionPerformed
@@ -328,7 +318,6 @@ public class TelaHomePage extends javax.swing.JFrame {
     private javax.swing.JButton novoButton;
     private javax.swing.JButton produtosEServicosButton;
     private javax.swing.JPanel produtosEServicosMenu;
-    private javax.swing.JButton verOfertadosButton;
     private javax.swing.JButton verTodosButton;
     // End of variables declaration//GEN-END:variables
 
@@ -339,14 +328,14 @@ public class TelaHomePage extends javax.swing.JFrame {
     }
 
     private void abrirMenuBarSubmenus(TelaHomePageMenuButtons menuButton) {
-       this.fecharTodosMenuBarSubmenus();
-       
-       if (this.ultimoMenuBarSubmenuAberto != null && this.ultimoMenuBarSubmenuAberto == menuButton) {
-           this.ultimoMenuBarSubmenuAberto = null;
-           return;
-       }
-        
-       switch (menuButton) {
+        this.fecharTodosMenuBarSubmenus();
+
+        if (this.ultimoMenuBarSubmenuAberto != null && this.ultimoMenuBarSubmenuAberto == menuButton) {
+            this.ultimoMenuBarSubmenuAberto = null;
+            return;
+        }
+
+        switch (menuButton) {
             case PRODUTOS_E_SERVICOS:
                 this.produtosEServicosMenu.setVisible(true);
                 break;
@@ -359,7 +348,7 @@ public class TelaHomePage extends javax.swing.JFrame {
             default:
                 break;
         }
-       
-       this.ultimoMenuBarSubmenuAberto = menuButton;
+
+        this.ultimoMenuBarSubmenuAberto = menuButton;
     }
 }

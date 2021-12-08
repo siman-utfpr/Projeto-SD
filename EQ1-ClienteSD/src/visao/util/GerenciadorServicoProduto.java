@@ -1,44 +1,97 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package visao.util;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import modelo.FlagSP;
-import modelo.FlagStatus;
-import modelo.FlagVDT;
-import modelo.ServicoProduto;
-import modelo.SPCategoria;
+import modelo.Produto;
 import modelo.Usuario;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-/**
- *
- * @author florentino-ariza
- */
 public class GerenciadorServicoProduto {
 
-    // Executa para as viões coisas relacionadas aos produtos,
-    // exemplo: busque todos os produtos disponíveis para venda, etc
-    public static ArrayList<ServicoProduto> getProdutos() {
-        ArrayList<ServicoProduto> produtosServicos = new ArrayList<>();
+    public static boolean cadastrarProduto(String titulo, String descricao,
+            String categoria, float valor, String flagSP, String flagVDT) throws JSONException, IOException {
+        JSONObject msg = new JSONObject("{operacao: 6}");
+        JSONObject data = new JSONObject();
 
-        Usuario u1 = new Usuario("012f", "Cacá", "cacazinho99", "dbz123");
-        Usuario u2 = new Usuario("012fg", "Luan Santana", "ls@ig.com", "corinthians123");
+        data.put("titulo", titulo);
+        data.put("descricao", descricao);
+        data.put("valor", valor);
+        data.put("usuario_id", GerenciadorUsuario.getUsuarioLogado().getUuid());
+        data.put("categoria", categoria);
+        data.put("flag_sp", flagSP);
+        data.put("flag_vdt", flagVDT);
 
-        produtosServicos.add(new ServicoProduto("Cachorro de plástico", 40.0f, "00", SPCategoria.LAZER, FlagSP.P, FlagVDT.V, FlagStatus.A, u1));
-        produtosServicos.add(new ServicoProduto("Palhaço de aniversário", 399.99f, "01", SPCategoria.LAZER, FlagSP.S, FlagVDT.V, FlagStatus.A, u1));
-        produtosServicos.add(new ServicoProduto("Luis Siman", null, "02", SPCategoria.LAZER, FlagSP.S, FlagVDT.D, FlagStatus.A, u2));
-        produtosServicos.add(new ServicoProduto("Cachorro de plástico", 40.0f, "00", SPCategoria.LAZER, FlagSP.P, FlagVDT.V, FlagStatus.A, u1));
+        msg.put("data", data);
 
-        return produtosServicos;
+        JSONObject resposta = GerenciadorUsuario.clienteTCP.enviarMensagem(msg);
+        System.out.println("MENSAGEM ENVIADA: " + msg);
+        Logger.escreverMensagem("MENSAGEM ENVIADA: " + msg);
+        System.out.println("MENSAGEM RECEBIDA: " + resposta);
+        Logger.escreverMensagem("MENSAGEM RECEBIDA: " + resposta);
+
+        return !resposta.getBoolean("erro");
     }
 
-    public static void excluirServicoProduto(ServicoProduto servicoProduto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public static boolean editarProduto(Produto p) throws JSONException, IOException {
+        JSONObject msg = new JSONObject("{operacao: 11}");
+        JSONObject data = new JSONObject();
+        msg.put("data", data);
+        data.put("produto_servico_id", p.getUuid());
+        data.put("titulo", p.getTitulo());
+        data.put("descricao", p.getDescricao());
+        data.put("valor", p.getValor());
+        data.put("usuario_id", GerenciadorUsuario.getUsuarioLogado().getUuid());
+        data.put("categoria", p.getCategoria());
+        data.put("flag_sp", String.valueOf(p.getFlagSP()));
+        data.put("flag_vdt", String.valueOf(p.getFlagVDT()));
+        JSONObject resposta = GerenciadorUsuario.clienteTCP.enviarMensagem(msg);
+        System.out.println("MENSAGEM ENVIADA: " + msg);
+        Logger.escreverMensagem("MENSAGEM ENVIADA: " + msg);
+        System.out.println("MENSAGEM RECEBIDA: " + resposta);
+        Logger.escreverMensagem("MENSAGEM RECEBIDA: " + resposta);
+        return !resposta.getBoolean("erro");
     }
 
-    public static void abrirFecharServicoProduto(ServicoProduto servicoProduto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public static boolean excluirProduto(Produto p) throws JSONException, IOException {
+        JSONObject msg = new JSONObject("{operacao: 12}");
+        JSONObject data = new JSONObject();
+        data.put("produto_servico_id", p.getUuid());
+        msg.put("data", data);
+        JSONObject resposta = GerenciadorUsuario.clienteTCP.enviarMensagem(msg);
+        System.out.println("MENSAGEM ENVIADA: " + msg);
+        Logger.escreverMensagem("MENSAGEM ENVIADA: " + msg);
+        System.out.println("MENSAGEM RECEBIDA: " + resposta);
+        Logger.escreverMensagem("MENSAGEM RECEBIDA: " + resposta);
+        return !resposta.getBoolean("erro");
     }
+
+    public static ArrayList<Produto> listarProdutos() throws JSONException, IOException {
+        JSONObject msg = new JSONObject("{operacao: 9}");
+        JSONObject resposta = GerenciadorUsuario.clienteTCP.enviarMensagem(msg);
+        System.out.println("MENSAGEM ENVIADA: " + msg);
+        Logger.escreverMensagem("MENSAGEM ENVIADA: " + msg);
+        System.out.println("MENSAGEM RECEBIDA: " + resposta);
+        Logger.escreverMensagem("MENSAGEM RECEBIDA: " + resposta);
+        ArrayList<Produto> produtos = new ArrayList<>();
+        JSONArray data = resposta.getJSONArray("data");
+        for (int i = 0; i < data.length(); i++) {
+            JSONObject obj = data.getJSONObject(i);
+            String uuid = obj.getString("produto_servico_id");
+            String titulo = obj.getString("titulo");
+            String descricao = obj.getString("descricao");
+            String uuidUsuario = obj.getString("usuario_id");
+            float valor = (float) obj.getDouble("valor");
+            String categoria = obj.getString("categoria");
+            char flagSP = obj.getString("flag_sp").charAt(0);
+            char flagVDT = obj.getString("flag_vdt").charAt(0);
+            Produto p = new Produto(uuid, titulo, descricao, uuidUsuario, valor,
+                    categoria, flagSP, flagVDT, false);
+            produtos.add(p);
+        }
+
+        return produtos;
+    }
+
 }
